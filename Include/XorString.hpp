@@ -56,10 +56,10 @@ namespace XorString {
 	}
 
 	template<std::size_t N>
-	__attribute((always_inline)) inline std::array<char, N> decrypt(std::array<char, N> string) {
+	inline std::array<char, N> decrypt(std::array<char, N> string) {
 		static constexpr std::uint64_t key = detail::constructInitKey<N>();
 
-		std::uint64_t localKey = key;
+		volatile std::uint64_t localKey = key;
 
 		for(std::size_t i = 0; i < N; i++) {
 			char prev = string[i];
