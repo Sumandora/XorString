@@ -24,7 +24,7 @@ namespace XorString {
 		};
 
 		template <std::size_t N>
-		consteval std::uint64_t constructInitKey()
+		consteval std::uint64_t construct_init_key()
 		{
 			std::uint64_t key = 0;
 #ifdef XORSTRING_INITKEY_USE_TIME
@@ -42,31 +42,31 @@ namespace XorString {
 	template <detail::TemplateString String, std::size_t N = String.size()>
 	consteval std::array<char, N> encrypt()
 	{
-		std::array<char, N> newString{};
+		std::array<char, N> new_string{};
 
-		static constexpr std::uint64_t key = detail::constructInitKey<N>();
+		static constexpr std::uint64_t KEY = detail::construct_init_key<N>();
 
-		std::uint64_t localKey = key;
+		std::uint64_t local_key = KEY;
 
 		for (std::size_t i = 0; i < N; i++) {
-			newString[i] = String[i] ^ localKey;
-			localKey ^= String[i] ^ newString[i] ^ i;
+			new_string[i] = String[i] ^ local_key;
+			local_key ^= String[i] ^ new_string[i] ^ i;
 		}
 
-		return newString;
+		return new_string;
 	}
 
 	template <std::size_t N>
 	inline std::array<char, N> decrypt(std::array<char, N> string)
 	{
-		static constexpr std::uint64_t key = detail::constructInitKey<N>();
+		static constexpr std::uint64_t KEY = detail::construct_init_key<N>();
 
-		volatile std::uint64_t localKey = key;
+		volatile std::uint64_t local_key = KEY;
 
 		for (std::size_t i = 0; i < N; i++) {
 			char prev = string[i];
-			string[i] = string[i] ^ localKey;
-			localKey ^= string[i] ^ prev ^ i;
+			string[i] = string[i] ^ local_key;
+			local_key ^= string[i] ^ prev ^ i;
 		}
 
 		return string;
